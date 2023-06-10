@@ -1,10 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { peliculasSlice } from './slices/peliculasSlice'
 
 export const store = configureStore({
   reducer: {
-    // posts: postsReducer,
-    // comments: commentsReducer,
-    // users: usersReducer,
+    peliculas: peliculasSlice.reducer
   },
 })
 

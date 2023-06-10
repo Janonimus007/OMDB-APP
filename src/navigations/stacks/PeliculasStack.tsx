@@ -16,10 +16,10 @@ export const PeliculasStack =() =>{
                 }}   
             />
             <Stack.Screen 
-                name="Detalle de pelicula" 
+                name="PeliculasDetail" 
                 component={PeliculasDetail} 
                 options={{ 
-                    title: 'Favoritos',
+                    title: 'Detalle de pelicula',
                     headerTitleAlign:'center'
                 }}   
             />

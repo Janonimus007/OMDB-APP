@@ -3,8 +3,8 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
 import { PeliculaDetail, Search } from '../../interfaces/peliculas.interface'
 import { getDetail, getSearch } from '../thunks/peliculasThunks'
+import { setPelicula } from '../asyncStorage'
 
-// Define a type for the slice state
 interface PeliculasState {
   peliculasSearch: Search[] | [];
   isLoading:boolean;
@@ -13,7 +13,6 @@ interface PeliculasState {
   favoritos: Search[] | [];
 }
 
-// Define the initial state using that type
 const initialState: PeliculasState = {
   peliculasSearch: [],
   isLoading:false,
@@ -24,19 +23,28 @@ const initialState: PeliculasState = {
 
 export const peliculasSlice = createSlice({
   name: 'peliculas',
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    // increment: (state) => {
-    //   state.value += 1
-    // },
-    // decrement: (state) => {
-    //   state.value -= 1
-    // },
-    // // Use the PayloadAction type to declare the contents of `action.payload`
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload
-    // },
+    addFavoriteFromStorage: (state, action: PayloadAction<Search[]>) => {
+      state.favoritos= action.payload
+    },
+    addFavorite: (state, action: PayloadAction<Search>) => {
+      const pelicula= action.payload;
+      const existingMovie = state.favoritos.find((movie:Search) => movie.imdbID === pelicula.imdbID);
+      console.log(existingMovie);
+      
+      if (!existingMovie) {
+        console.log('entro');
+        
+        state.favoritos.push(action.payload);
+      }
+      setPelicula(state.favoritos)
+    },
+    deleteFavorite:(state, action: PayloadAction<Search>)=>{
+      const imdbIDToRemove = action.payload;
+      state.favoritos = state.favoritos.filter((movie:Search) => movie.imdbID != imdbIDToRemove.imdbID);
+      setPelicula(state.favoritos)
+    }
   },
   extraReducers(builder) {
     builder
@@ -78,10 +86,10 @@ export const peliculasSlice = createSlice({
 })
 
 export const { 
-  // increment, decrement, incrementByAmount 
+  addFavorite,
+  deleteFavorite,
+  addFavoriteFromStorage
 } = peliculasSlice.actions
 
-// // Other code such as selectors can use the imported `RootState` type
-// export const selectCount = (state: RootState) => state.counter.value
 
 export default peliculasSlice.reducer

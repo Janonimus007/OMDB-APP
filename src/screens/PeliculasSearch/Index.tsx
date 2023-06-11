@@ -5,6 +5,9 @@ import { getSearch } from '../../store/thunks/peliculasThunks'
 import { Search } from '../../interfaces/peliculas.interface'
 import { CardSearch } from '../../components/CardSearch'
 import { SinContenido } from '../../components/sinContenido'
+import { styles } from './PeliculasSearch.styles'
+import { getpeliculaStorage } from '../../store/asyncStorage'
+import { addFavorite, addFavoriteFromStorage } from '../../store/slices/peliculasSlice'
 
 export const PeliculasSearch = () => {
   const dispatch = useAppDispatch()
@@ -12,37 +15,37 @@ export const PeliculasSearch = () => {
   const [search, setSearch] = useState('')
 
   const getPeliculas =()=>{
-    console.log(search);
-    
     dispatch(getSearch(search))
   }
 
+
   useEffect(() => {
-    // dispatch(getSearch())
+    getpeliculaStorage().then((peli)=>{
+      peli&&dispatch(addFavoriteFromStorage(peli))
+    })
   }, [])
   
   return (
-    <View style={{flex:1}}>
-    <View style={{padding: 10}}>
-      <TextInput
-        style={{height: 40}}
-        placeholder="Ingresar pelicula"
-        onChangeText={newText => setSearch(newText)}
-        defaultValue={search}
-      />
-      <Button
-        title="Buscar pelicula"
-        onPress={() =>getPeliculas() }
-        
-      />
-    </View>
+    <View style={styles.container}>
+      <View style={styles.containerBtnInput}>
+        <TextInput
+          style={styles.input}
+          placeholder="Ingresar pelicula"
+          onChangeText={newText => setSearch(newText)}
+          defaultValue={search}
+        />
+        <Button
+          title="Buscar pelicula"
+          onPress={() =>getPeliculas() }
+        />
+      </View>
       {
         isLoading?(<ActivityIndicator style={{ marginVertical: "5%" }} />):
         (
         <FlatList
           ListEmptyComponent={
             !isLoading ? (
-              <SinContenido text='No se han encontrado peliculas en la busqueda'/>
+              <SinContenido text='Sin resultados'/>
             ) : (
               <ActivityIndicator style={{ marginVertical: "5%" }} />
             )
@@ -51,7 +54,10 @@ export const PeliculasSearch = () => {
           data={peliculasSearch}
           renderItem={({item,index}) => {
             return (
-              <CardSearch key={item.imdbID} {...item}/>
+              <View key={item.imdbID}>
+                <CardSearch  {...item}/>                
+              </View>
+ 
             );
           }}
         /> 

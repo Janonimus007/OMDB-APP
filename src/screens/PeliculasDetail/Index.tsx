@@ -15,6 +15,7 @@ interface Props{
 
 export const PeliculasDetail = ({ navigation, route }:Props)=> {
   const {id} = route.params;
+  
   const dispatch = useDispatch()
   const { isLoading,peliculaDetail } = useAppSelector((store) => store.peliculas);
   
@@ -26,7 +27,8 @@ export const PeliculasDetail = ({ navigation, route }:Props)=> {
   return (
     <ScrollView style={styles.container}>
       {
-        isLoading?(<ActivityIndicator style={{marginTop:'5%'}}/>):(
+        isLoading?(<ActivityIndicator style={{marginTop:'5%'}}/>):
+        peliculaDetail&&(
           <View>
             <Image
               style={styles.image}

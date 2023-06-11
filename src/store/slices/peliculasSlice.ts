@@ -31,11 +31,8 @@ export const peliculasSlice = createSlice({
     addFavorite: (state, action: PayloadAction<Search>) => {
       const pelicula= action.payload;
       const existingMovie = state.favoritos.find((movie:Search) => movie.imdbID === pelicula.imdbID);
-      console.log(existingMovie);
       
       if (!existingMovie) {
-        console.log('entro');
-        
         state.favoritos.push(action.payload);
       }
       setPelicula(state.favoritos)
